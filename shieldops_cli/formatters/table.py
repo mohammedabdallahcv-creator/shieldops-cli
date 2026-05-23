@@ -20,8 +20,21 @@ def to_table(task: str, result: dict) -> str:
 
     # ── Score hero ──
     stats = result.get("stats", result.get("report_contract", {}).get("stats", {}))
-    score = result.get("report_contract", {}).get("security_score_percent") or stats.get("score", "N/A")
-    grade = result.get("report_contract", {}).get("security_score_grade") or ""
+    score = (
+        result.get("security_score")
+        or result.get("security_score_percent")
+        or result.get("report_contract", {}).get("security_score")
+        or result.get("report_contract", {}).get("security_score_percent")
+        or stats.get("security_score")
+        or stats.get("score")
+        or result.get("v2_scan", {}).get("stats", {}).get("score")
+        or "N/A"
+    )
+    grade = (
+        result.get("security_score_grade")
+        or result.get("report_contract", {}).get("security_score_grade")
+        or ""
+    )
 
     console.print(Panel(
         f"[bold]{_task_label(task)}[/bold]\n"
