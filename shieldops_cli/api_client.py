@@ -49,7 +49,8 @@ class ShieldOpsClient:
             headers=self._headers,
             timeout=_TIMEOUT,
         )
-        data = resp.json() if resp.headers.get("content-type", "").startswith("application/json") else {}
+        is_json = resp.headers.get("content-type", "").startswith("application/json")
+        data = resp.json() if is_json else {}
 
         if resp.status_code == 403:
             raise ApiError(403, data.get("error", "access_denied"),
@@ -60,6 +61,9 @@ class ShieldOpsClient:
         if resp.status_code == 413:
             raise ApiError(413, "content_too_large", "File too large (max 250KB).")
         if resp.status_code >= 400:
+            if not is_json:
+                raise ApiError(resp.status_code, "server_error",
+                               f"Server error ({resp.status_code}) while generating report.")
             raise ApiError(resp.status_code,
                            data.get("error", "unknown"),
                            data.get("details", resp.text[:200]))

@@ -56,17 +56,26 @@ def analyze(file, fmt, output, open_report, fail_on):
     else:
         console.print(formatted)
 
-    # ── Report URL ──
-    report_url = result.get("report_url")
+    # ── Report URL (canonical: result.report_url → top-level route → scan_id fallback) ──
+    report_url = (
+        result.get("report_url")
+        or payload.get("route")
+    )
+    if not report_url:
+        scan_id = result.get("scan_id") or payload.get("scan_id") or ""
+        if scan_id:
+            report_url = f"/analyze/report_view?scan_id={scan_id}&origin=extension"
+
     if report_url:
         base = client.api_url
         full_url = report_url if report_url.startswith("http") else f"{base}{report_url}"
         console.print(f"\n[dim]Full report: {full_url}[/dim]")
 
-    if open_report and report_url:
-        import webbrowser
-        full_url = report_url if report_url.startswith("http") else f"{client.api_url}{report_url}"
-        webbrowser.open(full_url)
+        if open_report:
+            import webbrowser
+            webbrowser.open(full_url)
+    else:
+        console.print("\n[dim]No report URL returned for this scan.[/dim]")
 
     # ── CI/CD exit code ──
     if fail_on != "none":
