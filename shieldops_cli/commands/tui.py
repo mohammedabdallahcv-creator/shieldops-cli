@@ -1,11 +1,10 @@
-"""TUI command — Wave 1 smoke test stub.
+"""TUI command — entry point for the interactive Terminal UI.
 
-Will be replaced by full TUI dispatcher in Wave 2.
+Thin Click wrapper that delegates to the shieldops_tui package.
 """
 from __future__ import annotations
 
 import click
-from rich.console import Console
 
 
 @click.command("tui")
@@ -18,11 +17,11 @@ from rich.console import Console
 )
 def tui(theme: str) -> None:
     """Launch the interactive TUI (Claude-Code-like experience)."""
-    console = Console()
-    console.print(
-        f"[bold cyan][OK] TUI Smoke Test OK[/bold cyan] "
-        f"[dim](theme={theme})[/dim]"
-    )
-    console.print(
-        "[dim]Wave 1 complete. Full TUI arrives in Wave 2.[/dim]"
-    )
+    try:
+        from shieldops_tui.app import run
+    except ImportError as exc:
+        raise click.ClickException(
+            f"TUI dependencies missing: {exc}.\n\n"
+            "Install with: pip install 'shieldops-cli[tui]'"
+        )
+    run(theme=theme)
