@@ -33,6 +33,13 @@ cli.add_command(compose_generate, "compose-generate")
 cli.add_command(scan_image, "scan-image")
 cli.add_command(config_group, "config")
 
+# ── TUI command (optional, requires prompt_toolkit) ──
+try:
+    from shieldops_cli.commands.tui import tui
+    cli.add_command(tui)
+except ImportError:
+    pass  # TUI extra not installed; CLI works without it
+
 
 if __name__ == "__main__":
     cli()

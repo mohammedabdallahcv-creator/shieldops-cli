@@ -28,6 +28,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest", "pytest-cov", "responses"]
+tui = ["prompt_toolkit>=3.0.43"]
 
 [project.scripts]
 shieldops = "shieldops_cli.main:cli"
