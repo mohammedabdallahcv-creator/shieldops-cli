@@ -61,4 +61,4 @@ def autofix(file, fmt, output, apply):
     report_url = result.get("report_url")
     if report_url:
         full_url = report_url if report_url.startswith("http") else f"{client.api_url}{report_url}"
-        console.print(f"\n[dim]Full report: {full_url}[/dim]")
+        print(f"\nFull report: {full_url}")

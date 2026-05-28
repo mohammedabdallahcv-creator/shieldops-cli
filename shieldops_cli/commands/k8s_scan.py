@@ -54,7 +54,7 @@ def k8s_scan(file, fmt, output, open_report, fail_on):
     if report_url:
         base = client.api_url
         full_url = report_url if report_url.startswith("http") else f"{base}{report_url}"
-        console.print(f"\n[dim]Full report: {full_url}[/dim]")
+        print(f"\nFull report: {full_url}")
 
     if open_report and report_url:
         import webbrowser
