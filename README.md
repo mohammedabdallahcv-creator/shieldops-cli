@@ -311,4 +311,4 @@ MIT
 
 ---
 
-ShieldOps CLI is open-source. The analysis backend is proprietary and hosted at [shieldops-ai.onrender.com](https://shieldops-ai.dev/).
+ShieldOps CLI is open-source. The analysis backend is proprietary and hosted at [https://shieldops-ai.dev/](https://shieldops-ai.dev/).
