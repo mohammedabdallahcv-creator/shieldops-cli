@@ -5,7 +5,7 @@
 [![PyPI version](https://img.shields.io/badge/pypi-v1.0.0-blue.svg)](https://pypi.org/project/shieldops-cli/)
 [![Python](https://img.shields.io/pypi/pyversions/shieldops-cli.svg)](https://pypi.org/project/shieldops-cli/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Powered by ShieldOps AI](https://img.shields.io/badge/powered%20by-ShieldOps%20AI-8B5CF6)](https://shieldops-ai.onrender.com)
+[![Powered by ShieldOps AI](https://img.shields.io/badge/powered%20by-ShieldOps%20AI-8B5CF6)](https://shieldops-ai.dev/)
 
 ---
 
@@ -256,7 +256,7 @@ shieldops-scan:
 | Policy engine | No | Yes |
 | Priority queue | No | Yes |
 
-Get your API key at [https://shieldops-ai.dev/]((https://shieldops-ai.dev/)).
+Get your API key at [https://shieldops-ai.dev/](https://shieldops-ai.dev/).
 
 ---
 
