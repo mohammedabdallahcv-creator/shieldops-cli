@@ -35,5 +35,6 @@ shieldops = "shieldops_cli.main:cli"
 
 [project.urls]
 Homepage = "https://shieldops-ai.onrender.com"
-Documentation = "https://github.com/mohammedabdallahcv-creator/docker-analyzer#cli"
-Repository = "https://github.com/mohammedabdallahcv-creator/docker-analyzer"
+Documentation = "https://github.com/mohammedabdallahcv-creator/shieldops-cli"
+Repository = "https://github.com/mohammedabdallahcv-creator/shieldops-cli"
+Changelog = "https://github.com/mohammedabdallahcv-creator/shieldops-cli/releases"
