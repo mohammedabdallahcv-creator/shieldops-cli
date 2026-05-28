@@ -256,7 +256,7 @@ shieldops-scan:
 | Policy engine | No | Yes |
 | Priority queue | No | Yes |
 
-Get your API key at [shieldops-ai.onrender.com](https://shieldops-ai.onrender.com).
+Get your API key at [https://shieldops-ai.dev/]((https://shieldops-ai.dev/)).
 
 ---
 
