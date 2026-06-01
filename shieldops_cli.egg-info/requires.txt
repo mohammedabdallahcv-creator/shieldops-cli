@@ -1,0 +1,11 @@
+click>=8.1
+requests>=2.28
+rich>=13.0
+
+[dev]
+pytest
+pytest-cov
+responses
+
+[tui]
+prompt_toolkit>=3.0.43

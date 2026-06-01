@@ -1,0 +1,2 @@
+[console_scripts]
+shieldops = shieldops_cli.main:cli
