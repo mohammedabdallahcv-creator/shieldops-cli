@@ -181,6 +181,7 @@ shieldops analyze Dockerfile --format summary
 ## TUI — Interactive Terminal Interface
 
 ```bash
+pip install 'shieldops-cli[tui]'
 shieldops tui
 ```
 
@@ -203,9 +204,17 @@ shieldops> /exit
 Session closed.
 ```
 
-**Available commands**: `/analyze`, `/autofix`, `/sbom`, `/compose-scan`, `/compose-generate`, `/k8s-scan`, `/scan-image`, `/login`, `/logout`, `/whoami`, `/config`, `/save`, `/help`, `/clear`, `/exit`
+**Available commands**: `/analyze`, `/analyze-json`, `/autofix`, `/sbom`, `/compose-scan`, `/compose-generate`, `/k8s-scan`, `/scan-image`, `/login`, `/logout`, `/whoami`, `/config`, `/save`, `/help`, `/clear`, `/exit`
 
 Append `-json` to any scan command for JSON output (e.g., `/analyze-json`).
+
+**Free tier local analysis**: `/analyze` runs **locally** with 20 security rules — no API key needed. Free users get real, actionable Dockerfile security findings including:
+
+- Critical: curl piped to shell, exposed SSH ports, hardcoded secrets
+- High: latest tag, running as root, sudo in container, chmod 777
+- Medium: apt-get without install in same RUN, npm without --production, insecure HTTP
+- Low: ADD instead of COPY, missing HEALTHCHECK, pip without --no-cache-dir
+- Info: deprecated MAINTAINER, privileged ports, multiple RUNs
 
 **Tab** = autocomplete, **Up/Down** = history, **/save** = write to file, **/exit** = return to normal terminal for scroll/copy.
 

@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.0.4 (2026-06-04)
+
+### Added
+- **Interactive TUI** — `shieldops tui` launches a REPL with slash commands, tab completion, and history
+- `/analyze` runs locally with 20 security rules — free users get real findings, no API key needed
+- `/analyze-json` for JSON output, `/save` to persist reports, `/help` for command reference
+- Cloud commands (`/autofix`, `/sbom`, `/compose-scan`, `/k8s-scan`) require API key via `/login`
+- Formatters now support local analyzer output (`issues` key, `stats` severity counts)
+
+### Changed
+- Version bumped to 1.0.4
+
 ## v1.0.3 (2026-05-30)
 
 ### Changed
