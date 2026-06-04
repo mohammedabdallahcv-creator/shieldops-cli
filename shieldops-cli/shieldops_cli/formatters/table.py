@@ -29,6 +29,7 @@ def _first_present(*values):
 def _safe_get_score(result: dict) -> tuple[object, str]:
     contract = result.get("report_contract", {})
     stats = result.get("stats", {})
+    summary = result.get("summary", {})
 
     score = _first_present(
         result.get("security_score"),
@@ -41,6 +42,7 @@ def _safe_get_score(result: dict) -> tuple[object, str]:
         stats.get("security_score_percent"),
         result.get("score"),
         result.get("overall_score"),
+        summary.get("risk_score"),
     )
     if score is None:
         score = "N/A"
@@ -51,6 +53,7 @@ def _safe_get_score(result: dict) -> tuple[object, str]:
         stats.get("grade"),
         result.get("grade"),
         result.get("risk_grade"),
+        summary.get("risk_grade"),
     )
     if grade is None:
         grade = ""
