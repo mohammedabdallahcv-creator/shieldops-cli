@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.0.5 (2026-06-05)
+
+### Fixed
+- Added missing README.md to package so PyPI shows project description properly
+
 ## v1.0.4 (2026-06-05)
 
 ### Added

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "shieldops-cli"
-version = "1.0.4"
+version = "1.0.5"
 description = "ShieldOps AI — Security scanner CLI for Docker, Kubernetes, Compose, SBOM, and more."
 readme = "README.md"
 license = "MIT"
