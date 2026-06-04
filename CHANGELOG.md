@@ -1,6 +1,14 @@
 # Changelog
 
-## v1.0.4 (2026-06-04)
+## v1.0.4 (2026-06-05)
+
+### Added
+- **Cyber-minimal TUI banner** — branded splash frame with ShieldOps ASCII wordmark
+- **Cloud analysis in TUI** — `/analyze` and `/analyze-json` now use cloud AI when API key is present
+- Server error passthrough in `whoami()` — shows actual error from server instead of generic message
+
+### Fixed
+- API keys URL corrected from `/settings/api-keys` to `/api-keys` across all CLI code and error messages
 
 ### Added
 - **Interactive TUI** — `shieldops tui` launches a REPL with slash commands, tab completion, and history

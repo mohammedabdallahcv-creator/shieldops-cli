@@ -20,19 +20,22 @@ console = Console()
 HISTORY_FILE = Path.home() / ".shieldops" / "tui_history"
 
 WELCOME = """
-  _   _        _____ _     _____
- | | | |      /  ___| |   /  ___|
- | | | |_ __  \\ `--.| |__ \\ `--.
- | | | | '_ \\  `--. \\ '_ \\ `--. \\
- | |_| | | | /\\__/ / | | /\\__/ /
-  \\___/|_| |_\\____/|_| |_\\____/   AI
-
+┌─[ ShieldOps ]─────────────────────────────────────────────────┐
+│  ███████╗██╗  ██╗██╗███████╗██╗     ██████╗  ██████╗ ███████╗ │
+│  ██╔════╝██║  ██║██║██╔════╝██║     ██╔══██╗██╔═══██╗██╔════╝ │
+│  ███████╗███████║██║█████╗  ██║     ██║  ██║██║   ██║███████╗ │
+│  ╚════██║██╔══██║██║██╔══╝  ██║     ██║  ██║██║   ██║╚════██║ │
+│  ███████║██║  ██║██║███████╗███████╗██████╔╝╚██████╔╝███████║ │
+│  ╚══════╝╚═╝  ╚═╝╚═╝╚══════╝╚══════╝╚═════╝  ╚═════╝ ╚══════╝ │
+│                                                              │
+│  Security Analysis Command Interface                         │
+└──────────────────────────────────────────────────────────────┘
 """
 
 HELP_TEXT = """
 Available commands:
-  /analyze          Analyze Dockerfile (local, free, no API key)
-  /analyze-json     Analyze Dockerfile, output as JSON
+  /analyze          Analyze Dockerfile (local or cloud with API key)
+  /analyze-json     Analyze Dockerfile, output as JSON (local or cloud with API key)
   /autofix          AI auto-fix Dockerfile (requires API key)
   /sbom             Generate SBOM (requires API key)
   /compose-scan     Scan docker-compose.yml (requires API key)
@@ -193,7 +196,7 @@ def _tui_input(session: PromptSession, prompt_text: str, style: FormattedText | 
 def cmd_analyze(args: str | None, last_output: str,
                 session: PromptSession | None = None,
                 style: FormattedText | None = None) -> str:
-    """Analyze a Dockerfile locally (free tier)."""
+    """Analyze a Dockerfile (local or cloud with API key)."""
     if not args:
         file_path = _tui_input(session, "Path to Dockerfile: ", style)
         if not file_path:
@@ -204,10 +207,37 @@ def cmd_analyze(args: str | None, last_output: str,
     if not content:
         return ""
 
+    from shieldops_cli import config as cfg
     from shieldops_cli.formatters.table import render_table
+
+    api_key = cfg.get_api_key()
+
+    if api_key:
+        from shieldops_cli.api_client import ApiError, ShieldOpsClient
+
+        client = ShieldOpsClient()
+        with console.status("[bold blue]Analyzing with cloud AI...", spinner="dots"):
+            try:
+                payload = client.run_task("analyze", content, Path(args).name)
+            except ApiError as e:
+                console.print(f"[red]Error: {e.message}[/red]")
+                return ""
+
+        result = payload.get("result", {})
+        console.print(render_table("analyze", result))
+
+        report_url = result.get("report_url") or payload.get("route")
+        if report_url:
+            base = client.api_url
+            full_url = report_url if report_url.startswith("http") else f"{base}{report_url}"
+            console.print(f"\nFull report: {full_url}")
+
+        total = result.get("summary", {}).get("total_issues", 0)
+        return f"Cloud analysis: {total} issues found"
+
     from shieldops_cli.local_analyzer import analyze_dockerfile_local
 
-    with console.status("[bold blue]Analyzing Dockerfile...", spinner="dots"):
+    with console.status("[bold blue]Analyzing locally...", spinner="dots"):
         time.sleep(0.3)
         result = analyze_dockerfile_local(content, filename=Path(args).name)
 
@@ -221,7 +251,7 @@ def cmd_analyze(args: str | None, last_output: str,
 def cmd_analyze_json(args: str | None, last_output: str,
                      session: PromptSession | None = None,
                      style: FormattedText | None = None) -> str:
-    """Analyze a Dockerfile and output JSON."""
+    """Analyze a Dockerfile and output JSON (local or cloud with API key)."""
     if not args:
         file_path = _tui_input(session, "Path to Dockerfile: ", style)
         if not file_path:
@@ -232,12 +262,28 @@ def cmd_analyze_json(args: str | None, last_output: str,
     if not content:
         return ""
 
+    from shieldops_cli import config as cfg
     from shieldops_cli.formatters.json_fmt import to_json
-    from shieldops_cli.local_analyzer import analyze_dockerfile_local
 
-    with console.status("[bold blue]Analyzing...", spinner="dots"):
-        time.sleep(0.3)
-        result = analyze_dockerfile_local(content, filename=Path(args).name)
+    api_key = cfg.get_api_key()
+
+    if api_key:
+        from shieldops_cli.api_client import ApiError, ShieldOpsClient
+
+        client = ShieldOpsClient()
+        with console.status("[bold blue]Analyzing with cloud AI...", spinner="dots"):
+            try:
+                payload = client.run_task("analyze", content, Path(args).name)
+            except ApiError as e:
+                console.print(f"[red]Error: {e.message}[/red]")
+                return ""
+        result = payload.get("result", payload)
+    else:
+        from shieldops_cli.local_analyzer import analyze_dockerfile_local
+
+        with console.status("[bold blue]Analyzing locally...", spinner="dots"):
+            time.sleep(0.3)
+            result = analyze_dockerfile_local(content, filename=Path(args).name)
 
     console.print(to_json(result))
     return to_json(result)
@@ -535,7 +581,7 @@ def cmd_login(args: str | None, last_output: str,
 
     if "error" in info:
         console.print("[yellow]Key saved but could not verify immediately.[/yellow]")
-        console.print(f"   Check at: {cfg.get_api_url()}/settings/api-keys")
+        console.print(f"   Check at: {cfg.get_api_url()}/api-keys")
         return ""
 
     plan = info.get("plan", "free").title()

@@ -90,7 +90,11 @@ class ShieldOpsClient:
             timeout=15,
         )
         if resp.status_code != 200:
-            return {"error": "not_authenticated"}
+            try:
+                server_body = resp.json()
+                return {"error": server_body.get("error", "not_authenticated")}
+            except Exception:
+                return {"error": "not_authenticated"}
         return resp.json()
 
     # ── Health check ────────────────────────────────────

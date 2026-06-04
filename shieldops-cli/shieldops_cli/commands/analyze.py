@@ -64,7 +64,7 @@ def _run_local_analysis(content: str, filename: str, fmt, output, fail_on):
         console.print(formatted)
 
     console.print("\n[dim][Local analysis - 10 rules] Sign up for cloud analysis with AI:[/dim]")
-    console.print(f"[dim]  {cfg.get_api_url()}/settings/api-keys[/dim]")
+    console.print(f"[dim]  {cfg.get_api_url()}/api-keys[/dim]")
 
     if fail_on != "none":
         if check_severity_gate(result, fail_on):

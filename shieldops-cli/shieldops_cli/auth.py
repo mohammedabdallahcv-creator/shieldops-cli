@@ -8,7 +8,7 @@ console = Console()
 
 
 @click.command()
-@click.option("--key", default="", help="API key from https://shieldops-ai.dev/settings/api-keys")
+@click.option("--key", default="", help="API key from https://shieldops-ai.dev/api-keys")
 @click.option("--url", default=None, help="Override API base URL.")
 def login(key, url):
     """Authenticate with your ShieldOps API key (or run in free mode)."""
@@ -33,7 +33,7 @@ def login(key, url):
         console.print("[green]Running in [bold]FREE mode[/bold] (no API key)[/green]")
         console.print("   Dockerfile analysis: [green]local[/green] (no cloud credits)")
         console.print("   Other features: require Team or Enterprise plan")
-        console.print(f"   Get a key at: {cfg.get_api_url()}/settings/api-keys")
+        console.print(f"   Get a key at: {cfg.get_api_url()}/api-keys")
         return
 
     # Verify the key
@@ -41,7 +41,7 @@ def login(key, url):
     info = client.whoami()
     if "error" in info:
         console.print("[yellow]Key saved but could not verify.[/yellow]")
-        console.print(f"   Check the key at: {cfg.get_api_url()}/settings/api-keys")
+        console.print(f"   Check the key at: {cfg.get_api_url()}/api-keys")
         console.print(f"   Server said: {info.get('error', 'unknown')}")
         console.print("   You can still try CLI commands — free features work locally.")
     else:
