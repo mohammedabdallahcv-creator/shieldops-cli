@@ -7,7 +7,7 @@ from datetime import datetime
 from pathlib import Path
 
 from prompt_toolkit import PromptSession
-from prompt_toolkit.formatted_text import HTML
+from prompt_toolkit.formatted_text import FormattedText
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.shortcuts import clear
 from prompt_toolkit.styles import Style
@@ -89,11 +89,16 @@ def run(theme: str = "dark") -> None:
     last_output = ""
     running = True
 
+    from prompt_toolkit.formatted_text import FormattedText
+
+    prompt_text = FormattedText([
+        ("bold ansiblue", "shieldops"),
+        ("ansigray", "> "),
+    ])
+
     while running:
         try:
-            user_input = session.prompt(
-                HTML('<ansiblue bold>shieldops</ansiblue><ansigray>&gt; </ansigray>'),
-            ).strip()
+            user_input = session.prompt(prompt_text).strip()
         except (EOFError, KeyboardInterrupt):
             print()
             break
