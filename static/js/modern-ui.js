@@ -535,34 +535,28 @@ async function downloadReport(analysisText) {
             }
         }
 
-        // Fallback: open HTML report in a new tab for viewing first
-        // User can then download HTML / PDF / SARIF from buttons inside the report page
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = '/analyze/report';
-        form.target = '_blank';
-        const add = (name, value) => {
-            const i = document.createElement('input');
-            i.type = 'hidden';
-            i.name = name;
-            i.value = typeof value === 'string' ? value : JSON.stringify(value);
-            form.appendChild(i);
-        };
-        // Add CSRF token for the regular form submission
-        const csrfMeta = document.querySelector('meta[name="csrf-token"]");
-        if (csrfMeta) {
-            add('csrf_token', csrfMeta.getAttribute('content'));
+        // Fallback: open HTML report via fetch + JSON (no form size limits)
+        const resp = await fetch('/analyze/report', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                title,
+                analysis: analysisText,
+                stats: {},
+                extras,
+                scan_id: window.currentScanId || undefined,
+            })
+        });
+        if (!resp.ok) {
+            const errData = await resp.json().catch(() => null);
+            throw new Error(errData?.error || `HTTP ${resp.status}`);
         }
-
-        add('title', title);
-        add('analysis', analysisText);
-        add('stats', {});
-        add('extras', extras);
-        // NO auto_print — report opens for review; download from within the page
-        if (window.currentScanId) add('scan_id', window.currentScanId);
-        document.body.appendChild(form);
-        form.submit();
-        form.remove();
+        const html = await resp.text();
+        const w = window.open('', '_blank');
+        if (!w) return;
+        w.document.open();
+        w.document.write(html);
+        w.document.close();
     } catch (e) {
         const lang = document.documentElement.lang || 'ar';
         const messages = {
@@ -612,28 +606,27 @@ async function viewReport(analysisText) {
         }
     }
 
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = '/analyze/report';
-    form.target = '_blank';
-    const add = (name, value) => {
-        const i = document.createElement('input');
-        i.type = 'hidden';
-        i.name = name; i.value = typeof value === 'string' ? value : JSON.stringify(value);
-        form.appendChild(i);
-    };
-    const csrfMeta = document.querySelector('meta[name="csrf-token"]');
-    if (csrfMeta) {
-        add('csrf_token', csrfMeta.getAttribute('content'));
+    const resp = await fetch('/analyze/report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            title,
+            analysis: analysisText || '',
+            stats: {},
+            extras,
+            scan_id: window.currentScanId || undefined,
+        })
+    });
+    if (!resp.ok) {
+        const errData = await resp.json().catch(() => null);
+        throw new Error(errData?.error || `HTTP ${resp.status}`);
     }
-    add('title', title);
-    add('analysis', analysisText || '');
-    add('stats', {});
-    add('extras', extras);
-    if (window.currentScanId) add('scan_id', window.currentScanId);
-    document.body.appendChild(form);
-    form.submit();
-    form.remove();
+    const html = await resp.text();
+    const w = window.open('', '_blank');
+    if (!w) return;
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
 }
 
 window.viewReport = viewReport;
